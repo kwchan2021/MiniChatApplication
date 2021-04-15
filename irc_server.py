@@ -21,12 +21,9 @@ class Server:
 
 
         self.server_socket.bind((host, port))
-        #self.server_socket.listen(0)
         self.server_socket.listen()
         self.read_size = 512 #512 characters
 
-        # Select Vars
-        # my var
         self.clients = {}
         self.sockets_list = [self.server_socket]
         print(f'Listening for connections on {host}:{port}...')
@@ -36,10 +33,8 @@ class Server:
     def receive_message(self, client_socket):
         try:
 
-            # Receive our "header" containing message length, it's size is defined and constant
             message_header = client_socket.recv(HEADER_LENGTH)
 
-            # If we received no data, client gracefully closed a connection, for example using socket.close() or socket.shutdown(socket.SHUT_RDWR)
             if not len(message_header):
                 return False
 
@@ -51,10 +46,7 @@ class Server:
 
         except:
 
-            # If we are here, client closed connection violently, for example by pressing ctrl+c on his script
-            # or just lost his connection
-            # socket.close() also invokes socket.shutdown(socket.SHUT_RDWR) what sends information about closing the socket (shutdown read/write)
-            # and that's also a cause when we receive an empty message
+            # client closed connection violently with interrupt or has lost connection
             return False
 
 
@@ -69,14 +61,13 @@ class Server:
                     client_socket, client_address = self.server_socket.accept()
                     user = self.receive_message(client_socket)
 
-                    # If False - client disconnected before he sent his name
+                    # client has disconnected before he sent his name
                     if user is False:
                         continue
 
-                    # Client join channel successfully
+                    # Client has joined channel
                     self.sockets_list.append(client_socket)
                     self.clients[client_socket] = user
-
                     print('JOIN #global, Accepted new connection from {}:{}, nickname: {}'.format(*client_address, user['data'].decode('utf-8')))
 
                 else:
