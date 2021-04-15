@@ -24,12 +24,6 @@ HEADER_LENGTH = 64 # 512 Charcters = 64 bytes
 MSGLENG = 510
 NICKLENG = 9
 
-
-# IP ADDRESS and PORT
-#IP1 = "127.0.0.1"
-#PORT1 = 1234
-
-
 class IRCClient(patterns.Subscriber):
 
     def __init__(self):
